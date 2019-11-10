@@ -85,9 +85,54 @@ function spotifySearch() {
     });
 }
 
+function movieSearch() {
+
+    var movie = process.argv.slice(3).join('+');
+
+    axios.get('http://www.omdbapi.com/?t=' + movie + '&y=&plot=short&apikey=trilogy')
+        .then(function (response) {
+
+            var movieInfo = response.data;
+
+            // console.log(movieInfo); // everything
+            console.log('')
+            console.log('Movie title: ' + movieInfo.Title);
+            console.log('Release year: ' + movieInfo.Year);
+            console.log('IMDb rating: ' + movieInfo.imdbRating);
+            console.log('Rotten Tomatoes score: ' + movieInfo.Ratings[1].Value);
+            console.log('Country: ' + movieInfo.Country);
+            console.log('Language: ' + movieInfo.Language);
+            console.log(movieInfo.Plot);
+            console.log('Starring: ' + movieInfo.Actors);
+            console.log('');
+
+        }).catch(function (error) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                console.log("---------------Data---------------");
+                console.log(error.response.data);
+                console.log("---------------Status---------------");
+                console.log(error.response.status);
+                console.log("---------------Status---------------");
+                console.log(error.response.headers);
+            } else if (error.request) {
+                // The request was made but no response was received
+                // `error.request` is an object that comes back with details pertaining to the error that occurred.
+                console.log(error.request);
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.log("Error", error.message);
+            }
+            console.log(error.config);
+        });
+}
+
 // ======================================================================================================
 
 
 // bandsInTown();
 
-spotifySearch();
+// spotifySearch();
+
+movieSearch();
