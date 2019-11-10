@@ -13,6 +13,7 @@ var moment = require('moment');
 var spotify = new Spotify(keys.spotify);
 
 var command = process.argv[2];
+var movie;
 
 // ======================================================================================================
 // FUNCTIONS
@@ -86,8 +87,18 @@ function spotifySearch() {
 }
 
 function movieSearch() {
+    
+    if (process.argv[3]) {
+        movie = process.argv.slice(3).join('+');
+        movieOutput();
+    } 
+    else {
+        movie = 'mr+nobody';
+        movieOutput();
+    }
+}
 
-    var movie = process.argv.slice(3).join('+');
+function movieOutput() {
 
     axios.get('http://www.omdbapi.com/?t=' + movie + '&y=&plot=short&apikey=trilogy')
         .then(function (response) {
