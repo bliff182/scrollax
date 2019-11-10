@@ -25,8 +25,8 @@ function bandsInTown() {
 
     axios.get('https://rest.bandsintown.com/artists/' + artist + '/events?app_id=codingbootcamp')
         .then(function (response) {
+
             var eventInfo = response.data;
-            // console.log(eventInfo);
 
             for (var i = 0; i < eventInfo.length; i++) {
                 var date = moment(eventInfo[i].datetime).format('MM/DD/YYYY');
@@ -69,7 +69,9 @@ function spotifySearch() {
             return console.log('Error occurred: ' + err);
         }
 
+        console.log(data.tracks.items);
         var songInfo = data.tracks.items[0];
+        
         console.log('');
         console.log('Artist: ' + songInfo.album.artists[0].name);
         console.log('Song: ' + songInfo.name);
@@ -87,11 +89,11 @@ function spotifySearch() {
 }
 
 function movieSearch() {
-    
+
     if (process.argv[3]) {
         movie = process.argv.slice(3).join('+');
         movieOutput();
-    } 
+    }
     else {
         movie = 'mr+nobody';
         movieOutput();
@@ -105,7 +107,6 @@ function movieOutput() {
 
             var movieInfo = response.data;
 
-            // console.log(movieInfo); // everything
             console.log('')
             console.log('Movie title: ' + movieInfo.Title);
             console.log('Release year: ' + movieInfo.Year);
@@ -140,10 +141,33 @@ function movieOutput() {
 }
 
 // ======================================================================================================
+// FUNCTION EXECUTION
+// ======================================================================================================
 
+switch (command) {
+    case 'concert-this':
+        bandsInTown();
+        break;
+    
+    case 'spotify-this-song':
+        spotifySearch();
+        break;
+    
+    case 'movie-this':
+        movieSearch();
+        break;
+
+    // case 'do-what-it-says':
+    //     // function here
+    //     break;
+
+    default:
+        console.log('Please enter a valid command.');
+
+}
 
 // bandsInTown();
 
 // spotifySearch();
 
-movieSearch();
+// movieSearch();
