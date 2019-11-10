@@ -1,15 +1,22 @@
+// ======================================================================================================
 // GLOBAL VARIABLES
 // ======================================================================================================
 
 require('dotenv').config();
 
 var keys = require('./keys.js');
+var fs = require('fs');
 var axios = require('axios');
 var Spotify = require('node-spotify-api');
 var moment = require('moment');
 
 var spotify = new Spotify(keys.spotify);
 
+var command = process.argv[2];
+
+// ======================================================================================================
+// FUNCTIONS
+// ======================================================================================================
 
 function bandsInTown() {
 
@@ -22,6 +29,7 @@ function bandsInTown() {
 
             for (var i = 0; i < eventInfo.length; i++) {
                 var date = moment(eventInfo[i].datetime).format('MM/DD/YYYY');
+                console.log('');
                 console.log("---------------Event---------------");
                 console.log('Venue: ' + eventInfo[i].venue.name);
                 console.log('Location: ' + eventInfo[i].venue.city + ', ' + eventInfo[i].venue.country);
@@ -51,5 +59,35 @@ function bandsInTown() {
         })
 }
 
+function spotifySearch() {
+
+    var song = process.argv.slice(3).join(' ');
+
+    spotify.search({ type: 'track', query: song }, function (err, data) {
+        if (err) {
+            return console.log('Error occurred: ' + err);
+        }
+
+        var songInfo = data.tracks.items[0];
+        console.log('');
+        console.log('Artist: ' + songInfo.album.artists[0].name);
+        console.log('Song: ' + songInfo.name);
+        console.log('Preview Link: ' + songInfo.preview_url);
+        console.log('Album: ' + songInfo.album.name);
+        console.log('');
+
+        // console.log(data.tracks.items); // everything
+        // console.log(data.tracks.items[0].album.artists[0].name); // artist name
+        // console.log(data.tracks.items[0].name); // song name
+        // console.log(data.tracks.items[0].album.external_urls);
+        // console.log(data.tracks.items[0].preview_url); // song preview link but a lot come back as null
+        // console.log(data.tracks.items[0].album.name); // album name
+    });
+}
+
+// ======================================================================================================
+
 
 // bandsInTown();
+
+spotifySearch();
