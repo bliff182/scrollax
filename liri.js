@@ -13,22 +13,29 @@ var moment = require('moment');
 var spotify = new Spotify(keys.spotify);
 
 var command = process.argv[2];
-var movie;
+var artist;
 var song;
 var songInfo;
+var movie;
 
 // ======================================================================================================
 // FUNCTIONS
 // ======================================================================================================
 
-function bandsInTown() {
+function concertThis() {
 
-    var artist = process.argv.slice(3).join('+');
+    artist = process.argv.slice(3).join('+');
+    concertOutput();
+}
+
+function concertOutput() {
 
     axios.get('https://rest.bandsintown.com/artists/' + artist + '/events?app_id=codingbootcamp')
         .then(function (response) {
 
             var eventInfo = response.data;
+            console.log('');
+            // console.log(artist + ' Events:');
 
             for (var i = 0; i < eventInfo.length; i++) {
                 var date = moment(eventInfo[i].datetime).format('MM/DD/YYYY');
@@ -59,10 +66,10 @@ function bandsInTown() {
                 console.log('Error', error.message);
             }
             console.log(error.config);
-        })
+        });
 }
 
-function spotifySearch() {
+function spotifyThisSong() {
 
     if (process.argv[3]) {
         song = process.argv.slice(3).join(' ');
@@ -93,6 +100,7 @@ function spotifyResults() {
 }
 
 function spotifyLog() {
+
     console.log('');
     console.log('-----------------------------------');
     console.log('Artist: ' + songInfo.album.artists[0].name);
@@ -103,7 +111,7 @@ function spotifyLog() {
     console.log('');
 }
 
-function movieSearch() {
+function movieThis() {
 
     if (process.argv[3]) {
         movie = process.argv.slice(3).join('+');
@@ -137,8 +145,6 @@ function movieOutput() {
 
         }).catch(function (error) {
             if (error.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
                 console.log('---------------Data---------------');
                 console.log(error.response.data);
                 console.log('---------------Status---------------');
@@ -146,15 +152,40 @@ function movieOutput() {
                 console.log('---------------Status---------------');
                 console.log(error.response.headers);
             } else if (error.request) {
-                // The request was made but no response was received
-                // `error.request` is an object that comes back with details pertaining to the error that occurred.
                 console.log(error.request);
             } else {
-                // Something happened in setting up the request that triggered an Error
                 console.log('Error', error.message);
             }
             console.log(error.config);
         });
+}
+
+function doWhatItSays() {
+
+    fs.readFile('random.txt', 'utf8', function (err, data) {
+        if (err) {
+            return console.log(err);
+        }
+
+        data = data.split(',');
+
+        if (data[0] === 'concert-this') {
+            artist = data[1].replace(/^"|"$/g, ''); // removes boudary quotes from data[1]
+            // necessary because Bands In Town will not work if there are quotes around the artist
+            concertOutput();
+        }
+        else if (data[0] === 'spotify-this-song') {
+            song = data[1];
+            spotifyResults();
+        }
+        else if (data[0] === 'movie-this') {
+            movie = data[1];
+            movieOutput();
+        }
+        else {
+            console.log("Doesn't look like anything to me.");
+        }
+    });
 }
 
 // ======================================================================================================
@@ -164,21 +195,27 @@ function movieOutput() {
 switch (command) {
 
     case 'concert-this':
-        bandsInTown();
+        concertThis();
         break;
 
     case 'spotify-this-song':
-        spotifySearch();
+        spotifyThisSong();
         break;
 
     case 'movie-this':
-        movieSearch();
+        movieThis();
         break;
 
-    // case 'do-what-it-says':
-    //     // function here
-    //     break;
+    case 'do-what-it-says':
+        doWhatItSays();
+        break;
 
     default:
-        console.log('Please enter a valid command.');
+        console.log('');
+        console.log("You confused LIRI. It's okay, she's not the brightest.");
+        console.log('Enter "concert-this <artist/band name here>" to look for concerts!');
+        console.log('Enter "spotify-this-song <song name here>" to look up information on any song!');
+        console.log('Enter "movie-this <movie name here>" to search for movies!');
+        console.log('Or just enter "do-what-it-says" to just go with the flow of random.txt!');
+        console.log('');
 }
