@@ -26,6 +26,7 @@ function concertThis() {
 
     artist = process.argv.slice(3).join('+');
     concertOutput();
+    logCommand();
 }
 
 function concertOutput() {
@@ -38,14 +39,25 @@ function concertOutput() {
             // console.log(artist + ' Events:');
 
             for (var i = 0; i < eventInfo.length; i++) {
+
+                var venue = eventInfo[i].venue.name;
+                var location = eventInfo[i].venue.city + ', ' + eventInfo[i].venue.country;
                 var date = moment(eventInfo[i].datetime).format('MM/DD/YYYY');
+
                 console.log('');
                 console.log('---------------Event---------------');
-                console.log('Venue: ' + eventInfo[i].venue.name);
-                console.log('Location: ' + eventInfo[i].venue.city + ', ' + eventInfo[i].venue.country);
+                console.log('Venue: ' + venue);
+                console.log('Location: ' + location);
                 console.log('Date: ' + date);
                 console.log('-----------------------------------');
                 console.log('');
+
+                fs.appendFile('log.txt', '---------------Event---------------\nVenue: ' + venue + '\nLocation: ' + location
+                + '\nDate: ' + date + '\n-----------------------------------\n\n', function(err) {
+                    if (err) {
+                        console.log(err);
+                    }
+                });
             }
         }).catch(function (error) {
             if (error.response) {
@@ -70,6 +82,8 @@ function concertOutput() {
 }
 
 function spotifyThisSong() {
+
+    logCommand();
 
     if (process.argv[3]) {
         song = process.argv.slice(3).join(' ');
@@ -101,17 +115,31 @@ function spotifyResults() {
 
 function spotifyLog() {
 
+    var artistName = songInfo.album.artists[0].name;
+    var songName = songInfo.name;
+    var preview = songInfo.preview_url;
+    var album = songInfo.album.name;
+
     console.log('');
     console.log('-----------------------------------');
-    console.log('Artist: ' + songInfo.album.artists[0].name);
-    console.log('Song: ' + songInfo.name);
-    console.log('Preview Link: ' + songInfo.preview_url);
-    console.log('Album: ' + songInfo.album.name);
+    console.log('Artist: ' + artistName);
+    console.log('Song: ' + songName);
+    console.log('Preview link: ' + preview);
+    console.log('Album: ' + album);
     console.log('-----------------------------------');
     console.log('');
+
+    fs.appendFile('log.txt', '-----------------------------------\nArtist: ' + artistName + '\nSong: ' + songName 
+    + '\nPreview link: ' + preview + '\nAlbum: ' + album + '\n-----------------------------------\n\n', function(err) {
+        if (err) {
+            console.log(err);
+        }
+    });
 }
 
 function movieThis() {
+
+    logCommand();
 
     if (process.argv[3]) {
         movie = process.argv.slice(3).join('+');
@@ -143,6 +171,16 @@ function movieOutput() {
             console.log('-----------------------------------');
             console.log('');
 
+            fs.appendFile('log.txt', '-----------------------------------\nMovie title: ' + movieInfo.Title + 
+            '\nRelease year: ' + movieInfo.Year + '\nIMDb rating: ' + movieInfo.imdbRating + 
+            '\nRotten Tomatoes score: ' + movieInfo.Ratings[1].Value + '\nCountry: ' + movieInfo.Country + 
+            '\nLanguage: ' + movieInfo.Language + '\nSynopsis: ' + movieInfo.Plot + '\nStarring: ' + movieInfo.Actors + 
+            '\n-----------------------------------\n\n', function(err) {
+                if (err) {
+                    console.log()
+                }
+            });
+
         }).catch(function (error) {
             if (error.response) {
                 console.log('---------------Data---------------');
@@ -169,21 +207,34 @@ function doWhatItSays() {
 
         data = data.split(',');
 
-        if (data[0] === 'concert-this') {
-            artist = data[1].replace(/^"|"$/g, ''); // removes boudary quotes from data[1]
-            // necessary because Bands In Town will not work if there are quotes around the artist
-            concertOutput();
+        switch (data[0]) {
+
+            case 'concert-this':
+                artist = data[1].replace(/^"|"$/g, ''); // removes boudary quotes from data[1]
+                // necessary because Bands In Town will not work if there are quotes around the artist
+                concertOutput();
+                break;
+
+            case 'spotify-this-song':
+                song = data[1];
+                spotifyResults();
+                break;
+
+            case 'movie-this':
+                movie = data[1];
+                movieOutput();
+                break;
+
+            default:
+                console.log("Doesn't look like anything to me.");
         }
-        else if (data[0] === 'spotify-this-song') {
-            song = data[1];
-            spotifyResults();
-        }
-        else if (data[0] === 'movie-this') {
-            movie = data[1];
-            movieOutput();
-        }
-        else {
-            console.log("Doesn't look like anything to me.");
+    });
+}
+
+function logCommand() {
+    fs.appendFile('log.txt', '-----------------------------------\nCommand entered: ' + command + '\n', function(err) {
+        if (err) {
+            console.log(err);
         }
     });
 }
