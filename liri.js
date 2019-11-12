@@ -84,12 +84,11 @@ function spotifyThisSong() {
 
   if (process.argv[3]) {
     song = process.argv.slice(3).join(' ');
-    spotifyResults();
   }
   else { // if no song is provided
     song = 'the sign';
-    spotifyResults();
   }
+  spotifyResults();
 }
 
 function spotifyResults() {
@@ -103,12 +102,11 @@ function spotifyResults() {
 
     if (song === 'the sign') {
       songInfo = data.tracks.items[5];
-      spotifyLog();
     }
     else {
       songInfo = data.tracks.items[0];
-      spotifyLog();
     }
+    spotifyLog();
   });
 }
 
@@ -140,12 +138,11 @@ function movieThis() {
 
   if (process.argv[3]) {
     movie = process.argv.slice(3).join('+');
-    movieOutput();
   }
   else { // if no movie is provided
     movie = 'mr+nobody';
-    movieOutput();
   }
+  movieOutput();
 }
 
 function movieOutput() {
