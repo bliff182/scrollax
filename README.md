@@ -22,11 +22,13 @@ The following terminal commands can be used with LIRI:
 
 1. Open your preferred terminal program.
 
-2. Navigate to the folder containing the `liri.js` file.
+2. Navigate to the folder containing the `liri.js` and `package.json` files.
 
-3. Type `node liri.js` followed by any of the commands described above. 
+3. Run `npm install` in your terminal to install the necessary dependencies. 
 
-Here are some screenshots of LIRI's functionality:
+4. Type `node liri.js` followed by any of the commands described above. 
+
+See the screenshots below for LIRI's functionality:
 
 `node liri.js concert-this <artist/band name here>`
 ![concert-this](/screenshots/concert-this.png)
