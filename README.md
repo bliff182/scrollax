@@ -54,3 +54,5 @@ See the screenshots below for LIRI's functionality:
 - [Axios](https://www.npmjs.com/package/axios)
 - [Moment](https://www.npmjs.com/package/moment)
 - [DotEnv](https://www.npmjs.com/package/dotenv)
+
+**Created by Mike Bither**
