@@ -44,7 +44,7 @@ See the screenshots below for LIRI's functionality:
 `node liri.js do-what-it-says`
 ![do-what-it-says](/screenshots/do-what-it-says.png)
 
-## Technologies Used
+## Tools Used
 
 - JavaScript
 - Node.js
