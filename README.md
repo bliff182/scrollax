@@ -1,7 +1,5 @@
 # scrollax - LIRI
 
-**Created by Michael Bither**
-
 LIRI, standing for Language Interpretation and Recognition Interface, is a CLI app, intended for use with Node.js, that takes in user-input parameters and gives you back data. LIRI can currently search for concert, song, and movie information using the Bands In Town, Spotify, and OMDb APIs, respectively.
 
 ## How LIRI Works
